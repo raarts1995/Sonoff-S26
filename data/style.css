@@ -1,0 +1,284 @@
+html, body {
+	font-family: Verdana, Geneva, sans-serif;
+	margin: 0;
+	padding: 0;
+	height: 100%;
+    overflow-x: hidden;
+}
+
+.page {
+	width: 100%;
+	height: 100%;
+}
+
+.header {
+	width: 100%;
+	padding: 1em;
+	position: fixed;
+	box-sizing: border-box;
+	height: 3em;
+	background-color: #666;
+	color: #fff;
+	font-weight: bold;
+	text-align: center;
+	z-index: 3;
+}
+
+.content {
+	padding-top: 4.5em;
+	transition: 0.5s;
+	background-color: #fff;
+	box-sizing: border-box;
+	width: 100%;
+	min-height: 100%;
+	position: absolute;
+	z-index: 2;
+}
+
+.content.open {
+	transform: translateX(200px);
+}
+
+.views > div {
+	width: 100%;
+}
+
+/*grid*/
+.grid {
+	display: grid;
+	grid-template-areas: "onoff mqtt"
+	                     "network mqtt"
+	                     "current mdns";
+}
+.grid > #gridNetwork {
+	grid-area: network;
+}
+.grid > #gridCurrentConfig {
+	grid-area: current;
+}
+.grid > #gridMDNS {
+	grid-area: mdns;
+}
+.grid > #gridMQTT {
+	grid-area: mqtt;
+}
+.grid > #gridOnOff {
+	grid-area: onoff;
+}
+
+.grid > div:not(.grid) {
+	margin: 0em auto 3em;
+}
+
+/*menu styling*/
+.headerBtn {
+	color: #fff;
+	position: absolute;
+	font-size: 20px;
+	top: 0.5em;
+	transition: 0.3s;
+}
+.headerBtn:hover {
+	color: #aaa;
+}
+.headerMenu {
+	left: 20px;
+}
+.headerHelp {
+	right: 20px;
+}
+.menuLbl {
+	color: #f1f1f1;
+	padding-left: 20px;
+}
+.menu {
+    background-color: #111;
+	position: fixed;
+	padding-top: 3em;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 200px;
+	transition: 0.5s;
+	z-index: 1;
+}
+.menu a {
+    padding: 8px 8px 8px 32px;
+	font-size: 20px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+.menu a:hover {
+	color: #f1f1f1;
+}
+.menu a.active {
+	background-color: #444;
+}
+.menu .menuCloseBtn {
+	display: none;
+    position: absolute;
+    top: 0;
+    right: 20px;
+    font-size: 36px;
+}
+
+.menu #restartBtn {
+	margin: 0 0.5em;
+	background-color: #040;
+	border-radius: 0.5em;
+}
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 4;
+  padding-top: 100px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.6); /* Black w/ opacity */
+}
+.modalContent {
+	background-color: #fefefe;
+	margin: auto;
+	padding: 0;
+	border: 1px solid #888;
+	width: 80%;
+	max-height: 80%;
+	overflow-y: auto;
+}
+.modalHeader {
+	background-color: #f00;
+	padding: 0.5em 2em;
+	color: #fff;
+}
+.modalMain {
+	padding: 2em;
+}
+.modalFooter {
+	padding: 0.5em;
+	background-color: #bbb;
+	font-size: 12px;
+}
+.modalClose {
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modalClose:hover,
+.modalClose:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/*respond to screen sizes*/
+@media screen and (max-width: 1100px) {
+	.grid {
+		grid-template-areas: "onoff"
+		                     "network"
+		                     "current"
+		                     "mdns"
+		                     "mqtt";
+	}
+}
+/*@media screen and (max-width: 600px) {
+	.content {
+		margin-left: 0px;
+	}
+	.menu {
+		left: -200px;
+	}
+	.menu.open {
+		left: 0px;
+	}
+	.menu .menuCloseBtn {
+		display: block;
+	}
+	.content {
+		margin-top: 70px;
+	}
+}*/
+
+/*other*/
+a {
+    text-decoration: none;
+}
+table {
+	border-collapse: collapse;
+	border-radius: 1em;
+	overflow: hidden;
+	margin: 0px auto;
+	width: 75%;
+}
+th, td {
+	padding: 0.5em 1em;
+	background: #ddd;
+}
+th > input[type=checkbox] {
+	float: left;
+}
+td {
+	border-top: 2px solid white;
+}
+table.vertical > tbody > tr > td:first-child:not(.stdColor) {
+	background-color: #bbb;
+}
+input:not([type=checkbox]), select {
+	width: 90%;
+}
+th {
+	color: #fff;
+	background-color: #f00;
+}
+input, select{
+	padding: 0.5em;
+}
+.notification {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	padding: 20px 0px;
+	text-align: center;
+	font-weight: bold;
+	color: #fff;
+	background-color: #f00;
+	border-top: 1px solid #111;
+	transform:scaleY(0);
+	transform-origin: bottom;
+	transition: 0.5s;
+	z-index: 1;
+}
+.notification.open {
+	transform:scaleY(1);
+}
+.classOnOff {
+	width: 100%;
+	text-align: center;
+}
+.btnOnOff {
+	fill: #f00;
+	transition: 0.3s;
+}
+.btnOnOff:hover {
+	fill: #a00;
+}
+.btnOnOff:active:hover {
+	fill: #b55;
+}
+.btnOnOff.on {
+	fill: #0a0;
+}
+.btnOnOff.on:hover {
+	fill: #0f0;
+}
+.btnOnOff.on:active:hover {
+	fill: #5b5;
+}

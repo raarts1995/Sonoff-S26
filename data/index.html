@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Sonoff</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="script.js"></script>
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+	</head>
+	<body onload="pageLoad()">
+	<div class="page">
+		<div class="header">
+			Sonoff settings
+			<a href="javascript:toggleMenu()" class="headerBtn headerMenu">&#9776;</a>
+			<a href="javascript:showHelp()" class="headerBtn headerHelp">?</a>
+		</div>
+		<div id="menu" class="menu">
+			<h1 class="menuLbl">Menu</h1>
+			<!--a class="menuBtn" id="weatherDataBtn" href="javascript:javascript:showWeatherData()">Weather data</a>
+			<a class="menuBtn" id="WiFiSettingsBtn" href="javascript:showWiFiSettings()">WiFi settings</a-->
+			<a class="menuBtn" id="restartBtn" href="javascript:restart()">Restart</a>
+		</div>
+		<div class="content" id="content">
+			<div id="WiFiSettings" class="views grid">
+				<div id="gridNetwork">
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2">Network settings</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>SSID</td><td><select id="ssid"></select><br><button onclick="getSSIDList()">Refresh</button></td>
+							</tr>
+							<tr>
+								<td>Password</td><td><input type="password" id="pass"/></td>
+							</tr>
+							<tr>
+								<td colspan="2"><button onclick="setWiFiSettings()">Save</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="gridCurrentConfig">
+					<table>
+						<thead>
+							<tr>
+								<th>Current network configuration</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td id="currentSSID">No network configured</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="gridMDNS">
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2"><input type="checkbox" id="mdnsEnabled" onclick="enableMDNS()">MDNS settings</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Name</td><td><input type="text" id="mdnsName" onkeyup="mdnsNameChanged()"></td>
+							</tr>
+							<tr>
+								<td>Full name</td><td><input type="text" id="mdnsNameFull" disabled></td>
+							</tr>
+							<tr>
+								<td colspan="2"><button onclick="setMDNSSettings()">Save</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="gridOnOff">
+					<table>
+						<thead>
+							<tr>
+								<th>On/Off</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+								<div class="classOnOff">
+									<svg id="btnOnOff" class="btnOnOff" viewBox="0 0 64 64" width="128" height="128" onclick="toggleOnOff()">
+										<path d="M 40 5.1699219 L 40 13.671875 A 20 20 0 0 1 52 32 A 20 20 0 0 1 32 52 A 20 20 0 0 1 12 32 A 20 20 0 0 1 24 13.748047 L 24 5.1757812 A 28 28 0 0 0 4 32 A 28 28 0 0 0 32 60 A 28 28 0 0 0 60 32 A 28 28 0 0 0 40 5.1699219 z " />
+										<path d="M 32 0 A 4 4 0 0 0 28 4 L 28 32 A 4 4 0 0 0 32 36 A 4 4 0 0 0 36 32 L 36 4 A 4 4 0 0 0 32 0 z " />
+									</svg>
+								</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div id="gridMQTT">
+					<table>
+						<thead>
+							<tr>
+								<th colspan="2"><input type="checkbox" id="mqttEnabled" onclick="enableMQTT()">MQTT settings</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>Device name</td><td><input type="text" id="mqttName"></td>
+							</tr>
+							<tr>
+								<td>Host address</td><td><input type="text" id="mqttHost"></td>
+							</tr>
+							<tr>
+								<td>Port</td><td><input type="text" id="mqttPort" placeholder="1883" oninput="mqttPortChanged()"></td>
+							</tr>
+							<tr>
+								<td>Topic</td><td><input type="text" id="mqttTopic" placeholder="e.g.: a/b"></td>
+							</tr>
+							<tr>
+								<td colspan="2"></td>
+							</tr>
+							<tr>
+								<td>Report state</td><td><input type="checkbox" id="mqttReportEnabled" onclick="enableReport()"></td>
+							</tr>
+							<tr>
+								<td>Report topic</td><td><input type="text" id="mqttReportTopic" placeholder="e.g.: a/b"></td>
+							</tr>
+							<tr>
+								<td colspan="2"><button onclick="setMQTTSettings()">Save</button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div id="notification" class="notification">
+			</div>
+		</div>
+	</div>
+		<div id="helpPage" class="modal">
+			<!-- Modal content -->
+			<div class="modalContent">
+				<div class="modalHeader">
+					<span class="modalClose" onclick="hideHelp()">&times;</span>
+					<h2>Help</h2>
+				</div>
+				<div class="modalMain">
+					The relay can be controlled and monitored using the following protocols:
+					<h3>REST API</h3>
+					Using the REST API the relay can be controlled by sending HTTP GET requests to the following URLs:
+					<br><br>
+					<table>
+						<tr><th>URL</th><th>Description</th></tr>
+						<tr><td>/setRelayState?state={on/off}</td><td>Turn the relay on or off</td></tr>
+						<tr><td>/getRelayState</td><td>Retrieve the current relay state</td></tr>
+						<tr><td>/toggleRelayState</td><td>Toggle the relay</td></tr>
+					</table>
+					<h3>MQTT</h3>
+					Using MQTT the relay can be controlled by sending the following data to the configured topic. 
+					<br><br>
+					<table>
+						<tr><th>Data</th><th>Description</th></tr>
+						<tr><td>0</td><td>Turn the relay on</td></tr>
+						<tr><td>1</td><td>Turn the relay off</td></tr>
+						<tr><td>t</td><td>Toggle the relay</td></tr>
+					</table>
+					<br>
+					The relay state (0 or 1) can be retrieved by subscribing to the configured report topic.
+				</div>
+				<div class="modalFooter">SW version: <span id="swVer">...</span> - Compile date: <span id="compileDate">...</span></div>
+			</div>
+		</div>
+	</body>
+</html>
